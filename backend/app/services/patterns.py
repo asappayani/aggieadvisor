@@ -18,7 +18,7 @@ COURSE_ROW_PATTERN = re.compile(
         (?P<Q>\d+)\s+                                    # Q-drops (we still want this)
         (?:\d+\s+)                                       # X column   ← ignored
         \d+\s+                                           # repeated total column (ignored)
-        (?P<instructor>[A-Za-z.,\s'\-]+)                 # instructor
+        (?P<professor>[A-Za-z.,\s'\-]+)                 # instructor
     """,
     re.VERBOSE
 )
