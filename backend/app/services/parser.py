@@ -11,6 +11,7 @@ CURR_FILE_DIR = os.path.dirname(os.path.abspath(__file__))
 PDF_PATH = os.path.join(CURR_FILE_DIR, "..", "..", "..", "data", "raw")
 
 test_pdf_path = os.path.join(CURR_FILE_DIR, "..", "..", "..", "data", "raw", "f24", "ENGR_F24.pdf")
+test_output_path = os.path.join(CURR_FILE_DIR, "..", "..", "..", "data", "processed")
 
 
 def parse_pdf(pdf_path: str) -> pd.DataFrame:
@@ -34,4 +35,13 @@ def parse_pdf(pdf_path: str) -> pd.DataFrame:
 
     return pd.DataFrame(parsed_data)
 
-print(parse_pdf(test_pdf_path))
+# a test function to see if the parser works
+def parse_pdf_to_csv(pdf_path: str) -> None:
+    df = parse_pdf(pdf_path)
+    df.to_csv(os.path.join(test_output_path, "ENGR_F24.csv"), index=False)
+
+
+
+
+if __name__ == "__main__":
+    parse_pdf_to_csv(test_pdf_path)
