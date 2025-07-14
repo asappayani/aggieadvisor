@@ -33,6 +33,9 @@ def parse_pdf(pdf_path: str | Path) -> pd.DataFrame:
             header_metadata = header_metadata.groupdict()
 
             for match in COURSE_ROW_PATTERN.finditer(raw_data):
+                if not match:
+                    raise ValueError(f"Course row not found in page {page.page_number} of {pdf_path}")
+                
                 course_row = match.groupdict()
                 course_row.update(header_metadata)
                 parsed_data.append(course_row)
