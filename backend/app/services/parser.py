@@ -15,9 +15,9 @@ PROCESSED_DATA_DIR = DATA_DIR / "processed"
 
 PDF_DATA_COLUMNS = ['course', 'professor', 'semester', 'year', 'college', 'department', 'A', 'B', 'C', 'D', 'F', 'total', 'gpa', 'Q']
 
-
 # Test paths
 test_pdf_path = RAW_DATA_DIR / "f24" / "ENGR_F24.pdf"
+
 
 def parse_pdf(pdf_path: str | Path) -> pd.DataFrame:
     parsed_data = []
@@ -40,10 +40,12 @@ def parse_pdf(pdf_path: str | Path) -> pd.DataFrame:
     df = pd.DataFrame(parsed_data)
     return pd.DataFrame(df[PDF_DATA_COLUMNS])
 
+
 def parse_pdf_to_csv(pdf_path: str | Path) -> None:
     df = parse_pdf(pdf_path)
     output_file = PROCESSED_DATA_DIR / "ENGR_F24.csv"
     df.to_csv(output_file, index=False)
+
 
 if __name__ == "__main__":
     parse_pdf_to_csv(test_pdf_path)
