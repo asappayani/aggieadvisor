@@ -5,7 +5,7 @@ sys.path.append(str(Path(__file__).resolve().parents[3]))
 
 import pandas as pd
 from parser import parse_pdf
-from backend.db.insert import bulk_insert
+from backend.db.insert import bulk_insert_courses
 
 
 ROOT_DIR = Path(__file__).resolve().parents[3]
@@ -77,7 +77,7 @@ def process_pdfs(pdf_files: list[Path]) -> None:
             rows = df_cleaned.to_dict('records')
             
             # Insert into database
-            rows_inserted = bulk_insert(rows)
+            rows_inserted = bulk_insert_courses(rows)
             
             print(f"Successfully processed {pdf_path.name}")
             print(f"Inserted {rows_inserted} new rows")
