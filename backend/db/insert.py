@@ -17,6 +17,7 @@ REQUIRED_COLUMNS = [
 
 def _get_db_connection() -> sqlite3.Connection:
     """Get a connection to the database."""
+
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
@@ -24,6 +25,7 @@ def _get_db_connection() -> sqlite3.Connection:
 
 def test_connection() -> bool:
     """Test database connection and verify courses table exists."""
+
     try:
         with _get_db_connection() as conn:
             cursor = conn.cursor()
@@ -48,6 +50,7 @@ def _validate_insert_data(rows: Sequence[Dict[str, Any]], conflict_cols: Sequenc
     
     Raises ValueError if validation fails.
     """
+
     if not rows:
         raise ValueError("No rows provided for insertion")
     
@@ -68,6 +71,7 @@ def bulk_insert(rows: Sequence[Dict[str, Any]], conflict_cols: Sequence[str] = [
     
     Returns number of new rows inserted.
     """
+
     # Test connection to database
     test_connection()
 
