@@ -7,10 +7,10 @@ from pprint import pprint as pp
 from patterns import HEADER_PATTERN, COURSE_ROW_PATTERN
 
 
-# Get the directory of the current script
-script_dir = os.path.dirname(os.path.abspath(__file__))
-# Go up 3 levels to reach the workspace root, then into data/raw
-pdf_path = os.path.join(script_dir, "..", "..", "..", "data", "raw", "f24", "ENGR_F24.pdf")
+CURR_FILE_DIR = os.path.dirname(os.path.abspath(__file__))
+PDF_PATH = os.path.join(CURR_FILE_DIR, "..", "..", "..", "data", "raw")
+
+test_pdf_path = os.path.join(CURR_FILE_DIR, "..", "..", "..", "data", "raw", "f24", "ENGR_F24.pdf")
 
 
 def parse_pdf(pdf_path: str) -> pd.DataFrame:
@@ -34,4 +34,4 @@ def parse_pdf(pdf_path: str) -> pd.DataFrame:
 
     return pd.DataFrame(parsed_data)
 
-print(parse_pdf(pdf_path))
+print(parse_pdf(test_pdf_path))
