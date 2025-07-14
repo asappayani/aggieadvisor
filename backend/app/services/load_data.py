@@ -96,13 +96,14 @@ def process_pdfs(pdf_files: list[Path]) -> None:
 
 def load_all_data() -> None:
     """Main function to load all PDF data into database."""
-    
+
     try:
         pdf_files = get_pdf_files()
         if pdf_files:
             process_pdfs(pdf_files)
     except Exception as e:
         print(f"Error loading data: {e}")
+
 
 if __name__ == "__main__":
     load_all_data()
