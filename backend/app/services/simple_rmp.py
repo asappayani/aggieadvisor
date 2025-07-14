@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-simple_rmp.py  –  type a professor’s name, get their RateMyProfessors stats.
+simple_rmp.py – look up a prof, pick the right one, see their RMP numbers.
 
-• Updated: July 2025 — uses the current RMP GraphQL schema (newSearch root)
+• Updated: July 2025 – now also prints the professor’s department.
 • Reqs   : pip install requests
 """
 
@@ -11,8 +11,7 @@ import requests, textwrap
 # ---------------------------------------------------------------------------
 API     = "https://www.ratemyprofessors.com/graphql"
 HEADERS = {
-    # RMP now enforces Basic-auth (“test:test”) on all GraphQL POSTs
-    "Authorization": "Basic dGVzdDp0ZXN0",
+    "Authorization": "Basic dGVzdDp0ZXN0",          # mandatory Basic-auth
     "Content-Type":  "application/json",
     "Origin":        "https://www.ratemyprofessors.com",
     "Referer":       "https://www.ratemyprofessors.com/",
@@ -24,22 +23,27 @@ SCHOOL_QUERY = """
 query ($text: String!) {
   newSearch {
     schools(query: { text: $text }) {
-      edges {
-        node { id name city state }
-      }
+      edges { node { id name city state } }
     }
   }
 }
 """
 
+# ---------- GraphQL: teacher search --------------------------------------
 TEACHER_QUERY = """
 query ($text: String!, $sid: ID!) {
   newSearch {
     teachers(query: { text: $text, schoolID: $sid }) {
       edges {
         node {
-          id legacyId firstName lastName
-          avgRating avgDifficulty numRatings
+          id
+          legacyId
+          firstName
+          lastName
+          department        # department is valid on Teacher
+          avgRating
+          avgDifficulty
+          numRatings
         }
       }
     }
@@ -47,7 +51,7 @@ query ($text: String!, $sid: ID!) {
 }
 """
 
-# ---------- helper to fire GraphQL calls ---------------------------------
+# ---------- GraphQL helper ------------------------------------------------
 def gql(doc: str, variables: dict) -> dict:
     r = requests.post(API, headers=HEADERS,
                       json={"query": doc, "variables": variables},
@@ -58,9 +62,8 @@ def gql(doc: str, variables: dict) -> dict:
         raise RuntimeError(data["errors"])
     return data["data"]
 
-# ---------- interactive campus picker ------------------------------------
+# ---------- interactive school picker ------------------------------------
 def pick_school() -> str:
-    """Prompt the user until they pick a campus; return that campus’s ID."""
     while True:
         term = input("School search (e.g. “Texas A&M”): ").strip()
         hits = gql(SCHOOL_QUERY, {"text": term})["newSearch"]["schools"]["edges"]
@@ -76,19 +79,44 @@ def pick_school() -> str:
         except (ValueError, IndexError):
             print("  – invalid choice –")
 
+# ---------- choose-a-prof helper -----------------------------------------
+def choose_prof(edges):
+    """Show all hits and let the user pick one."""
+    for i, e in enumerate(edges, 1):
+        n   = e["node"]
+        who = f"{n['firstName']} {n['lastName']}"
+        dept = n.get("department") or "?"
+        extra = f" [{dept}] ({n['numRatings']} ratings, {n['avgRating'] or '–'}/5)"
+        print(f"{i}. {who}{extra}")
+    while True:
+        try:
+            idx = int(input(f"Choose 1-{len(edges)} (0 = cancel): "))
+        except ValueError:
+            print("  – enter a number –"); continue
+        if idx == 0:
+            return None
+        if 1 <= idx <= len(edges):
+            return edges[idx-1]["node"]
+        print("  – out of range –")
+
 # ---------- professor look-up --------------------------------------------
 def prof_stats(name: str, school_id: str):
     edges = gql(TEACHER_QUERY,
                 {"text": name, "sid": school_id})["newSearch"]["teachers"]["edges"]
     if not edges:
         return None
-    n = edges[0]["node"]
+
+    node = edges[0]["node"] if len(edges) == 1 else choose_prof(edges)
+    if node is None:                      # user cancelled
+        return "cancelled"
+
     return {
-        "display":    f"{n['firstName']} {n['lastName']}",
-        "rating":     n["avgRating"],
-        "difficulty": n["avgDifficulty"],
-        "count":      n["numRatings"],
-        "link":       f"https://www.ratemyprofessors.com/professor/{n['legacyId']}",
+        "display":    f"{node['firstName']} {node['lastName']}",
+        "department": node.get("department"),
+        "rating":     node["avgRating"],
+        "difficulty": node["avgDifficulty"],
+        "count":      node["numRatings"],
+        "link":       f"https://www.ratemyprofessors.com/professor/{node['legacyId']}",
     }
 
 # ---------- CLI loop ------------------------------------------------------
@@ -104,11 +132,13 @@ def main() -> None:
             break
 
         info = prof_stats(name, sid)
-        if not info:
+        if info is None:
             print("  ✗  No RMP entry found.\n"); continue
+        if info == "cancelled":
+            print("  – cancelled –\n"); continue
 
         print(textwrap.dedent(f"""\
-            ▸ {info['display']}
+            ▸ {info['display']}  [{info['department'] or '–'}]
               rating      : {info['rating'] or '–'} / 5
               difficulty  : {info['difficulty'] or '–'} / 5
               # of ratings: {info['count']}
