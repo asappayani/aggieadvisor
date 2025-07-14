@@ -3,6 +3,8 @@ import pandas as pd
 from pathlib import Path
 from parser import parse_pdf
 
+ROOT_DIR = Path(__file__).resolve().parents[3]
+DB_PATH = ROOT_DIR / "backend" / "db" / "aggieadvisor.db"
 
 DB_COLUMNS = {
     "A":"a_count","B":"b_count","C":"c_count","D":"d_count","F":"f_count",
@@ -12,9 +14,12 @@ DB_COLUMNS = {
 }
 
 
-def clean_data(df: pd.DataFrame) -> pd.DataFrame:
-    df = df.rename(columns=DB_COLUMNS) # rename dataframe columns to match database schema
+def clean_data(df: pd.DataFrame) -> pd.DataFrame: 
+    """ Clean data to match database schema """
+    df = df.rename(columns=DB_COLUMNS)
+
     ints = ["a_count", "b_count", "c_count", "d_count", "f_count", "total_count", "q_drop", "year"]
+
     df[ints] = df[ints].astype(int)
     df["gpa"] = df["gpa"].astype(float)
     df["semester"] = df["semester"].str.upper()
@@ -22,7 +27,11 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     df["professor"] = df["professor"].str.upper()
     df["course"] = df["course"].str.upper()
     df["college"] = df["college"].str.upper()
+
     return df  
+
+
+
 
 
 

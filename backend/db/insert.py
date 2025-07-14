@@ -36,6 +36,9 @@ def test_connection() -> bool:
         print("Make sure you've run create_db.py to initialize the database.")
         return False
 
+
+
+
 if __name__ == "__main__":
     test_connection()
 
