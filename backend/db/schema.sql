@@ -24,6 +24,10 @@ CREATE INDEX idx_course_professor ON courses(course, professor);
 CREATE INDEX idx_department ON courses(department);
 CREATE INDEX idx_semester_year ON courses(semester, year);
 
+-- Add unique constraint for duplicate detection
+CREATE UNIQUE INDEX idx_unique_course_offering 
+ON courses(course, semester, year, professor);
+
 -- Note: When migrating to PostgreSQL (Supabase), make these changes:
 -- 1. Change INTEGER PRIMARY KEY AUTOINCREMENT to SERIAL PRIMARY KEY
 -- 2. Change TIMESTAMP to TIMESTAMPTZ
