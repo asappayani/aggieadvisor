@@ -21,6 +21,7 @@ DB_COLUMNS = {
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame: 
     """ Clean data to match database schema """
+
     df = df.rename(columns=DB_COLUMNS)
 
     ints = ["a_count", "b_count", "c_count", "d_count", "f_count", "total_count", "q_drop", "year"]
@@ -38,6 +39,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
 def get_pdf_files() -> list[Path]:
     """Get list of all PDF files in the raw data directory."""
+
     if not RAW_DATA_DIR.exists():
         raise FileNotFoundError(f"Raw data directory not found: {RAW_DATA_DIR}")
     
@@ -54,6 +56,7 @@ def get_pdf_files() -> list[Path]:
 
 def process_pdfs(pdf_files: list[Path]) -> None:
     """Process PDF files and insert data into database."""
+
     total_processed = 0
     total_rows = 0
     
@@ -93,13 +96,13 @@ def process_pdfs(pdf_files: list[Path]) -> None:
 
 def load_all_data() -> None:
     """Main function to load all PDF data into database."""
+    
     try:
         pdf_files = get_pdf_files()
         if pdf_files:
             process_pdfs(pdf_files)
     except Exception as e:
         print(f"Error loading data: {e}")
-
 
 if __name__ == "__main__":
     load_all_data()
