@@ -13,9 +13,6 @@ DATA_DIR = PROJECT_ROOT / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
 
-# Create directories if they don't exist
-PROCESSED_DATA_DIR.mkdir(parents=True, exist_ok=True)
-
 # Test paths
 test_pdf_path = RAW_DATA_DIR / "f24" / "ENGR_F24.pdf"
 
