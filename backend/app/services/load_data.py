@@ -3,9 +3,9 @@ import pandas as pd
 from pathlib import Path
 from parser import parse_pdf
 
+
 ROOT_DIR = Path(__file__).resolve().parents[3]
 DB_PATH = ROOT_DIR / "backend" / "db" / "aggieadvisor.db"
-
 DB_COLUMNS = {
     "A":"a_count","B":"b_count","C":"c_count","D":"d_count","F":"f_count",
     "total":"total_count","gpa":"gpa","Q":"q_drop",
