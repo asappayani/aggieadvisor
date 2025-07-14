@@ -2,6 +2,11 @@
 CREATE TABLE IF NOT EXISTS courses (
     id INTEGER PRIMARY KEY AUTOINCREMENT,  -- Will be SERIAL in PostgreSQL
     course TEXT NOT NULL,                  -- e.g., 'AERO-201'
+    professor TEXT NOT NULL,               -- e.g., 'BHARGAVA D'
+    semester TEXT NOT NULL,                -- e.g., 'FALL'
+    year INTEGER NOT NULL,                 -- e.g., 2024
+    college TEXT NOT NULL,                 -- e.g., 'ENGINEERING'
+    department TEXT NOT NULL,              -- e.g., 'AEROSPACE ENGINEERING'
     a_count INTEGER NOT NULL,              -- Number of A grades
     b_count INTEGER NOT NULL,              -- Number of B grades
     c_count INTEGER NOT NULL,              -- Number of C grades
@@ -10,11 +15,6 @@ CREATE TABLE IF NOT EXISTS courses (
     total_count INTEGER NOT NULL,          -- Total number of students
     gpa DECIMAL(4,3) NOT NULL,             -- e.g., 3.500
     q_drop INTEGER NOT NULL,               -- Q-drop count (0 or 1)
-    professor TEXT NOT NULL,               -- e.g., 'BHARGAVA D'
-    semester TEXT NOT NULL,                -- e.g., 'FALL'
-    year INTEGER NOT NULL,                 -- e.g., 2024
-    college TEXT NOT NULL,                 -- e.g., 'ENGINEERING'
-    department TEXT NOT NULL,              -- e.g., 'AEROSPACE ENGINEERING'
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -13,6 +13,23 @@ DATA_DIR = PROJECT_ROOT / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
 
+COURSE_COLUMNS = [
+    'course',
+    'professor',
+    'semester',
+    'year',
+    'college',
+    'department',
+    'A',
+    'B',
+    'C',
+    'D',
+    'F',
+    'total',
+    'gpa',
+    'Q'
+]
+
 # Test paths
 test_pdf_path = RAW_DATA_DIR / "f24" / "ENGR_F24.pdf"
 
@@ -34,7 +51,8 @@ def parse_pdf(pdf_path: str | Path) -> pd.DataFrame:
                 course_row.update(header_metadata)
                 parsed_data.append(course_row)
 
-    return pd.DataFrame(parsed_data)
+    df = pd.DataFrame(parsed_data)
+    return pd.DataFrame(df[COURSE_COLUMNS])
 
 def parse_pdf_to_csv(pdf_path: str | Path) -> None:
     df = parse_pdf(pdf_path)
